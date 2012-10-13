@@ -6,9 +6,9 @@
 elevation = dict(\
     name='elevation',
     prototype='datasource.dataset',
-    dataset_path='/home/pset/proj/data/DEM-Tools-patch/source/ned10m/ned10m.vrt',
+    dataset_path='/Users/Kotaimen/proj/geodata/DEM-Tools-patch/source/ned10m/ned10m.vrt',
     cache=dict(prototype='metacache',
-               root='./themes/hills/cache/elevation',
+               root='./themes/Terrain/cache/elevation',
                compress=True,
                data_format='gtiff',
                ),
@@ -38,11 +38,11 @@ composer=dict(\
     )
 
 ROOT = dict(\
-    renderer=composer,
+    renderer=elevation,
     metadata=dict(tag='hills'),
-    pyramid=dict(levels=range(12,20),
-                 envelope=(-124,35,-112,39),
-                 zoom=14,
+    pyramid=dict(levels=range(12,16),
+                 envelope=(-113.37, -35.93, -111.16, 36.74),
+                 zoom=12,
                  center=(-112, 36),
                  format='jpg',
                  buffer=16,

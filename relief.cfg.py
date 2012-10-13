@@ -14,13 +14,13 @@ dem1 = dict(\
     prototype='datasource.storage',
     storage_type='metacache',
     stride=1,
-    root='./themes/hills/cache/elevation',
+    root='./themes/Terrain/cache/elevation',
     )
     
 dem1 = dict(\
     name='elevation',
     prototype='datasource.dataset',
-    dataset_path='/Users/Kotaimen/proj/geodata/DEM-Tools-patch/source/ned100m/ned100m.vrt',
+    dataset_path='/Users/Kotaimen/proj/geodata/DEM-Tools-patch/source/ned10m/ned10m.vrt',
     cache=dict(prototype='metacache',
                root='./themes/hills/cache/elevation',
                compress=True,
@@ -35,9 +35,9 @@ dem4 = copy.deepcopy(dem1)
 landcover =  dict(\
     name='vegetation',
     prototype='datasource.dataset',
-    dataset_path='/Users/Kotaimen/proj/lib/Terrain/landcover/landcover-rgb-4326.tif',
+    dataset_path='/Users/Kotaimen/proj/geodata/landcover/landcover-rgb-4326.tif',
     cache=dict(prototype='metacache',
-               root='./themes/hills/cache/landcover',
+               root='./themes/hills/Terrain/landcover',
                compress=True,
                data_format='gtiff',
                ),
@@ -83,14 +83,14 @@ color = dict(\
     prototype='processing.colorrelief',
     cache=None,
     sources=(dem4,),
-    color_context='themes/hills/hypsometric-map-ocean.txt',
+    color_context='themes/Terrain/hypsometric-map-ocean.txt',
     )
 
 waterbody = dict(\
     name='waterbody',
     prototype='datasource.mapnik',
     cache=None,
-    theme=r'themes/hills/waterbody.xml',
+    theme=r'themes/Terrain/waterbody.xml',
     image_type='png',
     buffer_size=0,
     scale_factor=1,
@@ -101,7 +101,7 @@ composer = dict(\
      name='imagemagick_composer',
      prototype='composite.imagemagick',
      cache=dict(prototype='metacache',
-               root='./themes/hills/cache/hills',
+               root='./themes/Terrain/cache/hills_vegetation',
                data_format='jpg',
                ),
 
@@ -146,15 +146,15 @@ composer = dict(\
 
 ROOT = dict(\
     metadata=dict(tag='world'),
-    pyramid=dict(levels=range(7, 12),
+    pyramid=dict(levels=range(7, 16),
                  format='jpg',
                  buffer=16,
-                 envelope=(-113.37, -35.93, -111.16, 36.74),
+                 envelope=(-113, -36, -111, 37),
                  zoom=11,
                  center=(-112, 36),
                  ),
     cache=dict(prototype='filesystem',
-               root='./themes/hills/cache/export',
+               root='./themes/Terrain/cache/export_vegetation',
                data_format='jpg',
                ),
     renderer=composer,
