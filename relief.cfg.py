@@ -1,161 +1,170 @@
-#
-# Extreme High Quality Shaded Relief
-#
+import os
 
-import copy
 
-# Vertical scale
-zfactor=4
-# Light direction
-azimuth=315
+zfactor = 8
+azimuth = 345 
+datadir = '/Users/Kotaimen/proj/geodata'
+themedir= './themes/Terrain'
+cachedir= os.path.join(themedir, 'cache')
+tag = 'Terrain'
+tile_size = 256
+fmt = 'jpg'
 
-dem1 = dict(\
-    name='dem',
-    prototype='datasource.storage',
-    storage_type='metacache',
-    stride=1,
-    root='./themes/Terrain/cache/elevation',
+elev_1km = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'srtm30_new/world_tiled.tif'),
+    cache=dict(prototype='metacache',
+        root=os.path.join(cachedir, 'elevation'),
+        compress=True,
+        data_format='gtiff',
+        ),
     )
+
+elev_30m = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'SRTM_30_org/world/fill/world.vrt'),
+    cache=dict(prototype='metacache',
+        root=os.path.join(cachedir, 'elevation'),
+        compress=True,
+        data_format='gtiff',
+        ),
+    )
+
+elev_3m = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'st-helens/st-helens.vrt'),
+    cache=dict(prototype='metacache',
+        root=os.path.join(cachedir, 'elevation'),
+        compress=True,
+        data_format='gtiff',
+        ),
+    )
+
+
+elev_10m = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'DEM-Tools-patch/source/ned10m/world.vrt'),    
+    cache=dict(prototype='metacache',
+        root=os.path.join(cachedir, 'elevation'),
+        compress=True,
+        data_format='gtiff',
+        ),
+    )
+   
+   
+elevation = dict(\
+    prototype='composite.selector',
+    sources = ['elev_1km', 'elev_30m', 'elev_10m', 'elev_3m'],
     
-dem1 = dict(\
-    name='elevation',
-    prototype='datasource.dataset',
-    dataset_path='/Users/Kotaimen/proj/geodata/DEM-Tools-patch/source/ned10m/ned10m.vrt',
-    cache=dict(prototype='metacache',
-               root='./themes/hills/cache/elevation',
-               compress=True,
-               data_format='gtiff',
-               ),
-)
-
-# XXX: Current config parser only supports a node tree
-dem2 = copy.deepcopy(dem1)
-dem3 = copy.deepcopy(dem1)
-dem4 = copy.deepcopy(dem1)
-landcover =  dict(\
-    name='vegetation',
-    prototype='datasource.dataset',
-    dataset_path='/Users/Kotaimen/proj/geodata/landcover/landcover-rgb-4326.tif',
-    cache=dict(prototype='metacache',
-               root='./themes/hills/Terrain/landcover',
-               compress=True,
-               data_format='gtiff',
-               ),
-)
-
-
+    #            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
+    condition = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    )
 
 diffuse = dict(\
-    name='diffuse',
     prototype='processing.hillshading',
-    cache=None,
-    sources=(dem1,),
+    sources='elevation',
     zfactor=zfactor,
     scale=1,
-    altitude=30,
+    altitude=35,
     azimuth=azimuth,
     )
-    
+
 detail = dict(\
-    name='detail',
     prototype='processing.hillshading',
-    cache=None,
-    sources=(dem2,),
+    sources='elevation',
     zfactor=1.5,
     scale=1,
-    altitude=45,
+    altitude=55,
     azimuth=azimuth,
 )
 
 specular = dict(\
-    name='specular',
     prototype='processing.hillshading',
-    cache=None,
-    sources=(dem3,),
+    sources='elevation',
     zfactor=zfactor,
     scale=1,
-    altitude=86,
+    altitude=90,
     azimuth=azimuth,
     )
 
-color = dict(\
-    name='color',
+colorrelief = dict(\
     prototype='processing.colorrelief',
     cache=None,
-    sources=(dem4,),
-    color_context='themes/Terrain/hypsometric-map-ocean.txt',
+    sources='elevation',
+    color_context=os.path.join(themedir, 'hypsometric-map-ocean.txt'),
     )
+
+
+landcover = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'natural-earth-2.0b3/raster/NE2_HR_LC_2/NE2_HR_LC.tif'),    
+    )
+ 
+color = dict(\
+    prototype='composite.selector',
+    sources = ['colorrelief', 'landcover'], 
+    
+    #            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
+    condition = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    )
+
 
 waterbody = dict(\
-    name='waterbody',
     prototype='datasource.mapnik',
-    cache=None,
-    theme=r'themes/Terrain/waterbody.xml',
+    theme=os.path.join(themedir, 'waterbody.xml'),
     image_type='png',
     buffer_size=0,
-    scale_factor=1,
-    force_reload=True,
+    scale_factor=tile_size//256
     )
 
+
 composer = dict(\
-     name='imagemagick_composer',
-     prototype='composite.imagemagick',
-     cache=dict(prototype='metacache',
-               root='./themes/Terrain/cache/hills_vegetation',
-               data_format='jpg',
-               ),
-
-     sources=[diffuse, detail, specular, color, waterbody, landcover],
-     format='jpg',
-     command=''' 
-
-        ( $1 -fill grey50 -colorize 100% )
-         #### Grayscale relief ####
-         # "diffuse" is major light, "detail" enhances shadow detail, "specular" is
-         # top highlight. 
-         
-        ( $1 ) -compose blend -define compose:args=25% -composite
-        ( $2 -brightness-contrast +0%x+40% ) -compose blend -define compose:args=20% -composite    
-        ( $3 -gamma 3 ) -compose blend -define compose:args=45% -composite     
-         
-         #### Note following blend is calibrated to 50% grey at flat areas.
-#         -brightness-contrast -10%x+0%
-#         -gamma 0.62
-         -brightness-contrast -10%x+0%
-         -gamma 0.75
-#         
-#         #### Color Relief ####
-         ( $6 -modulate 95,95,105 ) -compose overlay -composite
-                
-        #### Select a sharpen method! ####
-        #   -unsharp 2x1+0.5
-         -adaptive-sharpen 2	
-        #    -sharpen 0.33
-        
-        $5 -compose over -composite
-        
-        #### Final tuning ###
-#         -brightness-contrast -3%x+3%
-#         -modulate 100,102
-        
-        #### JPEG compression ####
-        -quality 85
-        ''',
-     )
+    prototype='composite.imagemagick',
+    sources=['diffuse', 'detail', 'specular', 'color', 'waterbody'],
+    cache=dict(prototype='metacache',
+              root=os.path.join(cachedir, '%s' % tag),
+              data_format=fmt,
+             ),
+    
+    format='jpg',
+    command='''   
+    (
+        ( $1 -fill grey40 -colorize 100% )
+        ( $1 ) -compose blend -define compose:args=60% -composite
+        ( $2 -contrast +25% ) -compose blend -define compose:args=20% -composite    
+        ( $3 -gamma 2 ) -compose blend -define compose:args=30% -composite     
+        -brightness-contrast -10%x-10%
+#        -gamma 0.9
+        ( $4 -brightness-contrast -17%x-10% ) -compose Overlay -composite
+         -sigmoidal-contrast 1
+        ( $5 ) -compose Over -composite
+        -sharpen 0.5
+        -quality 90
+    )
+    '''
+    )
 
 
 ROOT = dict(\
-    metadata=dict(tag='world'),
-    pyramid=dict(levels=range(7, 16),
-                 format='jpg',
-                 buffer=16,
-                 envelope=(-113, -36, -111, 37),
-                 zoom=11,
-                 center=(-112, 36),
-                 ),
+    renderer='composer',
+    metadata=dict(tag=tag,
+                  version='1.0',
+                  description='Shaded Relief Map of Mt St.Halen',
+                  attribution='Open Street Map, SRTM Plus, SRTM30, NED 1/3 Arc Second, NED 1/9 Arc Second',
+                  ),
     cache=dict(prototype='filesystem',
-               root='./themes/Terrain/cache/export_vegetation',
-               data_format='jpg',
-               ),
-    renderer=composer,
-    )
+              root=os.path.join(cachedir, 'export', '%s' % tag),
+              data_format=fmt,
+              simple=True
+             ),
+    pyramid=dict(levels=range(5, 17),
+#                   envelope=[-180, 20, -30, 60],        
+#                    envelope=[-124, 45, -121, 47],    
+                 envelope=[-122.363, 46.123, -122.02, 46.257],
+                 zoom=7,
+                 center=(-122.1897, 46.2024),
+                 format=fmt,
+                 buffer=4,
+                 tile_size=tile_size,
+                 ),
+)
