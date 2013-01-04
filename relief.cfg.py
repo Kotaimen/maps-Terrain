@@ -1,8 +1,8 @@
 import os
 
 
-zfactor = 8
-azimuth = 345 
+zfactor = 4
+azimuth = 325 
 datadir = '/Users/Kotaimen/proj/geodata'
 themedir= './themes/Terrain'
 cachedir= os.path.join(themedir, 'cache')
@@ -29,17 +29,16 @@ elev_30m = dict(\
         data_format='gtiff',
         ),
     )
-
-elev_3m = dict(\
+    
+elev_100m = dict(\
     prototype='datasource.dataset',
-    dataset_path=os.path.join(datadir, 'st-helens/st-helens.vrt'),
+    dataset_path=os.path.join(datadir, 'DEM-Tools-patch/source/ned100m/world_3857.tif'),
     cache=dict(prototype='metacache',
         root=os.path.join(cachedir, 'elevation'),
         compress=True,
         data_format='gtiff',
         ),
     )
-
 
 elev_10m = dict(\
     prototype='datasource.dataset',
@@ -51,13 +50,22 @@ elev_10m = dict(\
         ),
     )
    
-   
+elev_3m = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'st-helens/st-helens.vrt'),
+    cache=dict(prototype='metacache',
+        root=os.path.join(cachedir, 'elevation'),
+        compress=True,
+        data_format='gtiff',
+        ),
+    )
+
 elevation = dict(\
     prototype='composite.selector',
-    sources = ['elev_1km', 'elev_30m', 'elev_10m', 'elev_3m'],
+    sources = ['elev_1km', 'elev_100m', 'elev_10m', 'elev_3m'],
     
     #            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
-    condition = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+    condition = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3],
     )
 
 diffuse = dict(\
@@ -72,9 +80,9 @@ diffuse = dict(\
 detail = dict(\
     prototype='processing.hillshading',
     sources='elevation',
-    zfactor=1.5,
+    zfactor=zfactor / 2.,
     scale=1,
-    altitude=55,
+    altitude=65,
     azimuth=azimuth,
 )
 
@@ -83,7 +91,7 @@ specular = dict(\
     sources='elevation',
     zfactor=zfactor,
     scale=1,
-    altitude=90,
+    altitude=85,
     azimuth=azimuth,
     )
 
@@ -94,6 +102,10 @@ colorrelief = dict(\
     color_context=os.path.join(themedir, 'hypsometric-map-ocean.txt'),
     )
 
+bluemarble = dict(\
+    prototype='datasource.dataset',
+    dataset_path=os.path.join(datadir, 'BlueMarble/bathy.200406.tif'),    
+    )
 
 landcover = dict(\
     prototype='datasource.dataset',
@@ -129,17 +141,18 @@ composer = dict(\
     format='jpg',
     command='''   
     (
-        ( $1 -fill grey40 -colorize 100% )
-        ( $1 ) -compose blend -define compose:args=60% -composite
-        ( $2 -contrast +25% ) -compose blend -define compose:args=20% -composite    
-        ( $3 -gamma 2 ) -compose blend -define compose:args=30% -composite     
-        -brightness-contrast -10%x-10%
-#        -gamma 0.9
-        ( $4 -brightness-contrast -17%x-10% ) -compose Overlay -composite
-         -sigmoidal-contrast 1
-        ( $5 ) -compose Over -composite
-        -sharpen 0.5
-        -quality 90
+#          
+         ( $1 -fill grey50 -colorize 100% )
+         ( $1 ) -compose blend -define compose:args=30% -composite
+         ( $2 -fill #0039ff -tint 50 -gamma 0.8  ) -compose blend -define compose:args=40% -composite
+         ( $3 -gamma 2 -fill #ffe4b5 -tint 120 ) -compose blend -define compose:args=30% -composite
+         -brightness-contrast -13%x-5%         
+         ( $4 -brightness-contrast -17%x-8% -modulate 100,100,95 ) -compose Overlay -composite
+          -gamma 0.9
+         ( $5 ) -compose Over -composite
+         -sigmoidal-contrast 2
+         -adaptive-sharpen 0.5 
+         -quality 90
     )
     '''
     )
@@ -157,10 +170,10 @@ ROOT = dict(\
               data_format=fmt,
               simple=True
              ),
-    pyramid=dict(levels=range(5, 17),
-#                   envelope=[-180, 20, -30, 60],        
-#                    envelope=[-124, 45, -121, 47],    
-                 envelope=[-122.363, 46.123, -122.02, 46.257],
+    pyramid=dict(levels=range(5, 15),
+                  envelope=[-180, 20, -30, 60],        
+#                   envelope=[-124, 45, -121, 47],    
+#                 envelope=[-122.363, 46.123, -122.02, 46.257],
                  zoom=7,
                  center=(-122.1897, 46.2024),
                  format=fmt,
