@@ -1,7 +1,7 @@
 import os
 
 
-zfactor = 4
+zfactor = 4 #14 8 6 4
 azimuth = 325 
 datadir = '/Users/Kotaimen/proj/geodata'
 themedir= './themes/Terrain'
@@ -42,7 +42,7 @@ elev_100m = dict(\
 
 elev_10m = dict(\
     prototype='datasource.dataset',
-    dataset_path=os.path.join(datadir, 'DEM-Tools-patch/source/ned10m/world.vrt'),    
+    dataset_path=os.path.join(datadir, 'DEM-Tools-patch/source/ned10m/world_3857.tif'),    
     cache=dict(prototype='metacache',
         root=os.path.join(cachedir, 'elevation'),
         compress=True,
@@ -65,7 +65,7 @@ elevation = dict(\
     sources = ['elev_1km', 'elev_100m', 'elev_10m', 'elev_3m'],
     
     #            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
-    condition = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3],
+    condition = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3],
     )
 
 diffuse = dict(\
@@ -102,24 +102,10 @@ colorrelief = dict(\
     color_context=os.path.join(themedir, 'hypsometric-map-ocean.txt'),
     )
 
-bluemarble = dict(\
-    prototype='datasource.dataset',
-    dataset_path=os.path.join(datadir, 'BlueMarble/bathy.200406.tif'),    
-    )
-
 landcover = dict(\
     prototype='datasource.dataset',
     dataset_path=os.path.join(datadir, 'natural-earth-2.0b3/raster/NE2_HR_LC_2/NE2_HR_LC.tif'),    
     )
- 
-color = dict(\
-    prototype='composite.selector',
-    sources = ['colorrelief', 'landcover'], 
-    
-    #            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
-    condition = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    )
-
 
 waterbody = dict(\
     prototype='datasource.mapnik',
@@ -129,30 +115,37 @@ waterbody = dict(\
     scale_factor=tile_size//256
     )
 
+roads_labels = dict(\
+    prototype='datasource.mapnik',
+    theme=os.path.join(themedir, 'Terrain_road-labels.xml'),
+    image_type='png',
+    buffer_size=256,
+    scale_factor=tile_size//256
+    )
 
 composer = dict(\
     prototype='composite.imagemagick',
-    sources=['diffuse', 'detail', 'specular', 'color', 'waterbody'],
+    sources=['diffuse', 'detail', 'specular', 'landcover', 'waterbody', 'roads_labels'],
     cache=dict(prototype='metacache',
               root=os.path.join(cachedir, '%s' % tag),
               data_format=fmt,
-             ),
-    
+             ),    
     format='jpg',
     command='''   
     (
 #          
          ( $1 -fill grey50 -colorize 100% )
          ( $1 ) -compose blend -define compose:args=30% -composite
-         ( $2 -fill #0039ff -tint 50 -gamma 0.8  ) -compose blend -define compose:args=40% -composite
-         ( $3 -gamma 2 -fill #ffe4b5 -tint 120 ) -compose blend -define compose:args=30% -composite
-         -brightness-contrast -13%x-5%         
-         ( $4 -brightness-contrast -17%x-8% -modulate 100,100,95 ) -compose Overlay -composite
+         ( $2 -fill #003cff -tint 65 -gamma 0.8  ) -compose blend -define compose:args=40% -composite
+         ( $3 -gamma 2 -fill #ffd4a6 -tint 120 ) -compose blend -define compose:args=30% -composite
+         -brightness-contrast -12%x-5%         
+         ( $4 -brightness-contrast -15%x-7% -modulate 100,100,97 ) -compose Overlay -composite
           -gamma 0.9
          ( $5 ) -compose Over -composite
-         -sigmoidal-contrast 2
-         -adaptive-sharpen 0.5 
-         -quality 90
+         -sigmoidal-contrast 2.5
+         -sharpen 0x0.75
+         ( $6 ) -compose Over -composite
+         -quality 95
     )
     '''
     )
@@ -170,10 +163,9 @@ ROOT = dict(\
               data_format=fmt,
               simple=True
              ),
-    pyramid=dict(levels=range(5, 15),
-                  envelope=[-180, 20, -30, 60],        
-#                   envelope=[-124, 45, -121, 47],    
-#                 envelope=[-122.363, 46.123, -122.02, 46.257],
+    pyramid=dict(levels=range(4, 15),
+#                  envelope=[-124,34,-70,48],            
+#                  envelope=[-125,34,-105,48.5],        
                  zoom=7,
                  center=(-122.1897, 46.2024),
                  format=fmt,
