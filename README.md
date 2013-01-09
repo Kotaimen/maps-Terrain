@@ -10,3 +10,6 @@ Olympic National Park:
 
 Mt. Rainer:
 ![Sample 2](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-1.jpg)
+
+Salt Lake City:
+![Sample 3](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-2.jpg)
