@@ -7,14 +7,14 @@ Sample render uses OSM Waterbody, Natural Earth II land cover, SRTM30, NED 1/3 a
 
 Requires to mason 0.9.3.
 
-Olympic National Park:
 ![Sample 1](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-0.jpg)
 
-Mt. Rainer:
 ![Sample 2](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-1.jpg)
 
-San Francisco:
-![Sample 2](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-2.jpg)
+![Sample 3](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-2.jpg)
 
-Salt Lake City:
-![Sample 3](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-3.jpg)
+![Sample 4](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-3.jpg)
+
+![Sample 5](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-4.jpg)
+
+![Sample 6](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-5.jpg)

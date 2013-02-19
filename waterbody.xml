@@ -21,7 +21,7 @@
     <StyleName>waterbody</StyleName>
     <Datasource>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="table"><![CDATA[brick_waterbody]]></Parameter>
+       <Parameter name="table"><![CDATA[brick_waterbody_gen0_table]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
        <Parameter name="geometry_field"><![CDATA[]]></Parameter>
        <Parameter name="extent_cache"><![CDATA[custom]]></Parameter>
@@ -36,7 +36,7 @@
 
 <Style name="sea" filter-mode="first" >
   <Rule>
-    <PolygonSymbolizer fill="#88aabb"  gamma="0.14" />
+    <PolygonSymbolizer fill="#8bafc1"  gamma="0.14" />
   </Rule>
 </Style>
 <Layer name="sea"
