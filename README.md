@@ -3,9 +3,7 @@ maps-Terrain
 
 High Quality Terrain Shaded Relief (with "Illuminated" effect).
 
-Sample render uses OSM Waterbody, Natural Earth II land cover, SRTM30, NED 1/3 arc second, NED 1/9 arc second.
-
-Requires to mason 0.9.3.
+Requires mason-0.9.5.
 
 ![Sample 1](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-0.jpg)
 

@@ -11,8 +11,34 @@
 </Parameters>
 
 
+<Style name="waterbody_gen0" filter-mode="first" >
+  <Rule>
+  	<MinScaleDenominator>750000</MinScaleDenominator>
+    <PolygonSymbolizer fill="#88aabb" />
+  </Rule>
+</Style>
+<Layer name="waterbody_gen0"
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+    <StyleName>waterbody_gen0</StyleName>
+    <Datasource>
+       <Parameter name="type"><![CDATA[postgis]]></Parameter>
+       <Parameter name="table"><![CDATA[brick_waterbody_gen0_table]]></Parameter>
+       <Parameter name="key_field"><![CDATA[]]></Parameter>
+       <Parameter name="geometry_field"><![CDATA[]]></Parameter>
+       <Parameter name="extent_cache"><![CDATA[custom]]></Parameter>
+       <Parameter name="extent"><![CDATA[-20037508.34 -20037508.34 20037508.34 20037508.34]]></Parameter>
+       <Parameter name="dbname"><![CDATA[planet_osm_1301]]></Parameter>
+       <Parameter name="host"><![CDATA[172.26.183.198]]></Parameter>
+       <Parameter name="port"><![CDATA[5432]]></Parameter>
+       <Parameter name="user"><![CDATA[postgres]]></Parameter>
+       <Parameter name="password"><![CDATA[123456]]></Parameter>
+       <Parameter name="simplify_geometries"><![CDATA[yes]]></Parameter>
+    </Datasource>
+  </Layer>
+
 <Style name="waterbody" filter-mode="first" >
   <Rule>
+  	<MaxScaleDenominator>750000</MaxScaleDenominator>
     <PolygonSymbolizer fill="#88aabb" />
   </Rule>
 </Style>
@@ -21,18 +47,20 @@
     <StyleName>waterbody</StyleName>
     <Datasource>
        <Parameter name="type"><![CDATA[postgis]]></Parameter>
-       <Parameter name="table"><![CDATA[brick_waterbody_gen0_table]]></Parameter>
+       <Parameter name="table"><![CDATA[brick_waterbody]]></Parameter>
        <Parameter name="key_field"><![CDATA[]]></Parameter>
        <Parameter name="geometry_field"><![CDATA[]]></Parameter>
        <Parameter name="extent_cache"><![CDATA[custom]]></Parameter>
        <Parameter name="extent"><![CDATA[-20037508.34 -20037508.34 20037508.34 20037508.34]]></Parameter>
-       <Parameter name="dbname"><![CDATA[planet_osm_1210]]></Parameter>
+       <Parameter name="dbname"><![CDATA[planet_osm_1301]]></Parameter>
        <Parameter name="host"><![CDATA[172.26.183.198]]></Parameter>
        <Parameter name="port"><![CDATA[5432]]></Parameter>
        <Parameter name="user"><![CDATA[postgres]]></Parameter>
        <Parameter name="password"><![CDATA[123456]]></Parameter>
+       <Parameter name="simplify_geometries"><![CDATA[yes]]></Parameter>
     </Datasource>
   </Layer>
+
 
 <Style name="sea" filter-mode="first" >
   <Rule>
@@ -40,15 +68,14 @@
   </Rule>
 </Style>
 <Layer name="sea"
-  srs="+proj=longlat +ellps=WGS84 +no_defs"
-
+  srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
 >
     <StyleName>sea</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/home/pset/proj/geodata/osm_landmass/water-polygons-split-4326/water_polygons.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[/home/pset/proj/geodata/osm_landmass/water-polygons-split-3857/water_polygons.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
-    
+
   </Layer>
 
 </Map>
