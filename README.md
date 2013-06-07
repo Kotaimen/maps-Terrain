@@ -1,9 +1,16 @@
 maps-Terrain
 ============
 
-High Quality Terrain Shaded Relief (with "Illuminated" effect).
+High Quality Terrain Shaded Relier.
 
-Requires mason-0.9.5.
+Requires mason-0.9.x trunk.
+
+
+Coverage:
+
+![Coverage](https://github.com/Kotaimen/maps-Terrain/raw/master/coverage.png)
+
+Previews:
 
 ![Sample 1](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-0.jpg)
 
@@ -16,3 +23,5 @@ Requires mason-0.9.5.
 ![Sample 5](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-4.jpg)
 
 ![Sample 6](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-5.jpg)
+
+For a demo map, check [here](http://tiles.mason.s3-website-us-east-1.amazonaws.com/).
