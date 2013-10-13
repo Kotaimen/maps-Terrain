@@ -24,4 +24,4 @@ Previews:
 
 ![Sample 6](https://github.com/Kotaimen/maps-Terrain/raw/master/sample-5.jpg)
 
-For a demo map, check [here](http://tiles.mason.s3-website-us-east-1.amazonaws.com/).
+For a demo map, check [here](http://maps.masonmaps.me/index.html).
